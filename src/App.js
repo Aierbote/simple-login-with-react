@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 
-export function App() {
+const App = memo(() => {
   const cachedEmail = !!localStorage.getItem("email")
     ? localStorage.getItem("email")
     : "";
@@ -86,7 +86,7 @@ export function App() {
       )}
     </section>
   );
-}
+});
 
 
 export default App;
