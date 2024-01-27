@@ -1,12 +1,14 @@
 import { useState } from "react";
 
 export function App() {
-  const cachedEmail = localStorage.getItem("email");
+  const cachedEmail = !!localStorage.getItem("email")
+    ? localStorage.getItem("email")
+    : "";
   const cachedUsers = !!localStorage.getItem("users")
     ? JSON.parse(localStorage.getItem("users"))
     : {};
   const [isLogged, setIsLogged] = useState(!!cachedEmail);
-  const [inputEmail, setInputEmail] = useState("");
+  const [inputEmail, setInputEmail] = useState(cachedEmail);
   const [users, setUsers] = useState(cachedUsers);
 
   function onMap(user) {
@@ -36,9 +38,8 @@ export function App() {
       const newUsers = {
         ...users,
         [inputEmail]: {
-          ...users[inputEmail],
-          lastAccess: new Date().toISOString(),
           counter: 1,
+          lastAccess: new Date().toISOString(),
         },
       };
 
@@ -63,11 +64,11 @@ export function App() {
         <>
           {users[inputEmail].counter > 1 ? (
             <>
-              <div>Bentornato</div>
-              <div>Ultimo accesso {users[inputEmail].lastAccess}</div>
+              <div>Bentornat* {inputEmail}</div>
+              <div>Ultimo accesso {(new Date(users[inputEmail].lastAccess)).toLocaleString()}</div>
             </>
           ) : (
-            <div>Benvenuto</div>
+            <div>Benvenut* {inputEmail}</div>
           )}
           <button onClick={onClickLogout}>Logout</button>
         </>
