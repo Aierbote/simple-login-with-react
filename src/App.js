@@ -1,15 +1,40 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 const App = memo(() => {
-  const cachedEmail = !!localStorage.getItem("email")
-    ? localStorage.getItem("email")
-    : "";
-  const cachedUsers = !!localStorage.getItem("users")
-    ? JSON.parse(localStorage.getItem("users"))
-    : {};
-  const [isLogged, setIsLogged] = useState(!!cachedEmail);
-  const [inputEmail, setInputEmail] = useState(cachedEmail);
-  const [users, setUsers] = useState(cachedUsers);
+  // // Version 1.0
+  // const cachedEmail = !!localStorage.getItem("email")
+  //   ? localStorage.getItem("email")
+  //   : "";
+  // const cachedUsers = !!localStorage.getItem("users")
+  //   ? JSON.parse(localStorage.getItem("users"))
+  //   : {};
+  // const [isLogged, setIsLogged] = useState(!!cachedEmail);
+  // const [inputEmail, setInputEmail] = useState(cachedEmail);
+  // const [users, setUsers] = useState(cachedUsers);
+
+  // Version 2.0
+  const [isLogged, setIsLogged] = useState(false);
+
+  const [inputEmail, setInputEmail] = useState("");
+  const [users, setUsers] = useState({});
+
+
+  useEffect(
+    // on loading / mount, fetching data
+    () => {
+      console.log("didMount");
+
+      // Version 2.0
+      const cachedEmail = localStorage.getItem("email") || "";
+      const cachedUsers = JSON.parse(localStorage.getItem("users")) || {};
+
+      setIsLogged(!!cachedEmail);
+
+      setInputEmail(cachedEmail);
+      setUsers(cachedUsers);
+    },
+    []  // NOTE : empty Dependency Array: just once, on Mount
+  )
 
   function onMap(user) {
     if (user.email === inputEmail) {
