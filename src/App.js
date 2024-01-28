@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 const App = memo(() => {
   // // Version 1.0
@@ -82,42 +82,49 @@ const App = memo(() => {
     } else return user;
   }
 
-  function onClickLogin() {
-    setIsLogged(true);
-    localStorage.setItem("email", inputEmail);
-    if (!!users[inputEmail]) {
-      const newUsers = {
-        ...users,
-        [inputEmail]: {
-          counter: users[inputEmail].counter + 1,
-          lastAccess: new Date().toISOString(),
-        },
-      };
-      setUsers(newUsers);
-      localStorage.setItem("users", JSON.stringify(newUsers));
-    } else {
-      const newUsers = {
-        ...users,
-        [inputEmail]: {
-          counter: 1,
-          lastAccess: new Date().toISOString(),
-        },
-      };
+  const onClickLogin = useCallback(
+    () => {
+      setIsLogged(true);
+      localStorage.setItem("email", inputEmail);
+      if (!!users[inputEmail]) {
+        const newUsers = {
+          ...users,
+          [inputEmail]: {
+            counter: users[inputEmail].counter + 1,
+            lastAccess: new Date().toISOString(),
+          },
+        };
+        setUsers(newUsers);
+        localStorage.setItem("users", JSON.stringify(newUsers));
+      } else {
+        const newUsers = {
+          ...users,
+          [inputEmail]: {
+            counter: 1,
+            lastAccess: new Date().toISOString(),
+          },
+        };
 
-      setUsers(newUsers);
-      localStorage.setItem("users", JSON.stringify(newUsers));
-    }
-  }
+        setUsers(newUsers);
+        localStorage.setItem("users", JSON.stringify(newUsers));
+      }
+    },
+    [inputEmail, users]
+  );
 
-  function onClickLogout() {
-    setInputEmail("");
-    setIsLogged(false);
-    localStorage.removeItem("email");
-  }
+  const onClickLogout = useCallback(
+    () => {
+      setInputEmail("");
+      setIsLogged(false);
+      localStorage.removeItem("email");
+    },
+    []
+  );
 
-  function onChangeEmail(event) {
-    setInputEmail(event.target.value);
-  }
+  const onChangeEmail = useCallback(
+    (event) => setInputEmail(event.target.value),
+    []
+  );
 
   return (
     <section>
