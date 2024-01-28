@@ -18,6 +18,8 @@ const App = memo(() => {
   const [inputEmail, setInputEmail] = useState("");
   const [users, setUsers] = useState({});
 
+  // state of the page, what it shows
+  const [page, setPage] = useState(<></>);
 
   useEffect(
     // on loading / mount, fetching data
@@ -35,6 +37,40 @@ const App = memo(() => {
     },
     []  // NOTE : empty Dependency Array: just once, on Mount
   )
+
+
+  useEffect(
+    // when isLogged change
+    () => {
+      console.log("didUpdate");
+
+      const welcomePage = <>
+        {!!users[inputEmail] && users[inputEmail].counter > 1 ? (
+          <>
+            <div>Bentornat* {inputEmail}</div>
+            <div>Ultimo accesso {(new Date(users[inputEmail].lastAccess)).toLocaleString()}</div>
+          </>
+        ) : (
+          <div>Benvenut* {inputEmail}</div>
+        )}
+        <button onClick={onClickLogout}>Logout</button>
+      </>;
+
+      const loginPage = <>
+        <input
+          placeholder="Inserisci email"
+          value={inputEmail}
+          onChange={onChangeEmail}
+        />
+        <button onClick={onClickLogin} disabled={!inputEmail}>
+          Login
+        </button>
+      </>;
+
+      setPage(isLogged ? welcomePage : loginPage);
+    },
+    [isLogged, users, inputEmail]  // NOTE : Dependency Array full: at any change of these states/props
+  );
 
   function onMap(user) {
     if (user.email === inputEmail) {
@@ -85,30 +121,7 @@ const App = memo(() => {
 
   return (
     <section>
-      {isLogged ? (
-        <>
-          {users[inputEmail].counter > 1 ? (
-            <>
-              <div>Bentornat* {inputEmail}</div>
-              <div>Ultimo accesso {(new Date(users[inputEmail].lastAccess)).toLocaleString()}</div>
-            </>
-          ) : (
-            <div>Benvenut* {inputEmail}</div>
-          )}
-          <button onClick={onClickLogout}>Logout</button>
-        </>
-      ) : (
-        <>
-          <input
-            placeholder="Inserisci email"
-            value={inputEmail}
-            onChange={onChangeEmail}
-          />
-          <button onClick={onClickLogin} disabled={!inputEmail}>
-            Login
-          </button>
-        </>
-      )}
+      {page}
     </section>
   );
 });
