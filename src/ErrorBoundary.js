@@ -5,7 +5,7 @@ import React from "react";
  */
 class ErrorBoundary extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = { hasError: false };
   }
 
@@ -17,14 +17,13 @@ class ErrorBoundary extends React.Component {
     this.logErrorToMyService(error.toString(), info.componentStack);
   }
 
-  // a fake logging service
   logErrorToMyService = console.log;
 
   render() {
     return this.state.hasError
-      ? this.props.fallback
+      ? this.props.fallback || <div>Ops!</div>
       : this.props.children;
   }
-};
+}
 
 export default ErrorBoundary;
