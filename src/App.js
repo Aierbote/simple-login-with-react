@@ -50,9 +50,10 @@ const AppContext = createContext({
   onClickLogin: () => { },
   onClickLogout: () => { },
   onChangeEmail: () => { },
+  setInputEmail: () => { },
 });
 
-const ContentProvider = ({ children }) => {
+export const ContextProvider = ({ children }) => {
   const cachedEmail = utilityGetEmail();
   const cachedUsers = utilityGetUsers();
 
@@ -112,6 +113,7 @@ const ContentProvider = ({ children }) => {
         isLogged,
         users,
         inputEmail,
+        setInputEmail,
         onClickLogin,
         onClickLogout,
         onChangeEmail,
@@ -172,13 +174,11 @@ const App = memo(() => {
 
   return (
     <section>
-      <ContentProvider>
-        {page === "welcome" ? (
-          <WelcomePage users={users} onClickLogout={onClickLogout} />
-        ) : (
-          <LoginPage onChangeEmail={onChangeEmail} onClickLogin={onClickLogin} />
-        )}
-      </ContentProvider>
+      {page === "welcome" ? (
+        <WelcomePage users={users} onClickLogout={onClickLogout} />
+      ) : (
+        <LoginPage inputEmail={inputEmail} onChangeEmail={onChangeEmail} onClickLogin={onClickLogin} />
+      )}
     </section>
   );
 });
